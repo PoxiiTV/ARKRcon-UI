@@ -2,6 +2,10 @@
 
 ¡Bienvenido al cliente **RCON para ARK: Survival Evolved** más avanzado, intuitivo y estéticamente premium que existe! Diseñado especialmente con una estética **"Hacker / Cyberpunk"** oscura y futurista, sonidos retro/micro-animaciones envolventes, y una interfaz web/desktop sumamente amigable para usar desde cualquier dispositivo (PC, móvil o tablet) sin tener que memorizar un solo comando del juego.
 
+<p align="center">
+  <img src="foto-programa.png" alt="Poxi ARK RCON Panel Screenshot" width="800">
+</p>
+
 ---
 
 ## 🌟 Características Principales
