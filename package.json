@@ -1,0 +1,23 @@
+{
+  "name": "ark-rcon-web",
+  "version": "1.0.0",
+  "description": "Cliente RCON web premium para ARK Survival Evolved con interfaz Sci-Fi y sonidos",
+  "main": "main.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "electron": "electron .",
+    "build-exe": "electron-packager . \"PoxiARKRcon\" --platform=win32 --arch=x64 --icon=\"F:\\FORMATEO 2025 - OCTUBRE WIN 11\\CARPETAS IMPORTANTES\\Downloads\\PoxiSpotifyDownloader\\test\\Poxi V4 SUPER PERFECT redondo.ico\" --overwrite --out=dist",
+    "test": "node test-rcon.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "rcon-client": "^4.2.3"
+  },
+  "author": "Antigravity & PoxiiTV",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^41.7.0",
+    "electron-packager": "^17.1.2"
+  }
+}

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poxi ARK RCON Panel</title>
+  <meta name="description" content="Panel de administración RCON web para servidores ARK: Survival Evolved.">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="logo.ico" type="image/x-icon">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ============ PANTALLA DE CONFIGURACIÓN ============ -->
+  <div class="config-screen" id="config-screen">
+    <div class="glow-orb glow-1"></div>
+    <div class="glow-orb glow-2"></div>
+    <div class="config-box">
+      <div class="config-brand">
+        <img src="logo.ico" class="config-logo" alt="Poxi">
+        <h2>POXI ARK RCON</h2>
+        <p>Configura la conexión RCON de tu servidor de ARK</p>
+      </div>
+      <div class="config-form">
+        <div class="config-input-group">
+          <label><i class="fa-solid fa-server"></i> IP del Servidor / Host</label>
+          <input type="text" id="cfg-host" placeholder="ej: 167.17.71.121" autocomplete="off">
+        </div>
+        <div class="config-input-row" style="display:flex; gap:15px">
+          <div class="config-input-group" style="flex:1">
+            <label><i class="fa-solid fa-network-wired"></i> Puerto RCON</label>
+            <input type="number" id="cfg-port" placeholder="ej: 25205" autocomplete="off">
+          </div>
+          <div class="config-input-group" style="flex:1.5">
+            <label><i class="fa-solid fa-key"></i> Contraseña RCON</label>
+            <input type="password" id="cfg-password" placeholder="Contraseña..." autocomplete="off">
+          </div>
+        </div>
+        <button class="btn green" id="btn-save-config" style="width:100%; margin-top:20px; font-size:16px; padding:12px"><i class="fa-solid fa-plug"></i> Conectar y Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-container" id="app-panel" style="display:none">
+    <div class="glow-orb glow-1"></div>
+    <div class="glow-orb glow-2"></div>
+    <div class="glow-orb glow-3"></div>
+
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+      <div class="header-brand">
+        <img src="logo.ico" class="brand-logo" alt="Poxi">
+        <div class="brand-text">
+          <span class="brand-name">POXI ARK RCON</span>
+          <span class="brand-sub">PANEL DE CONTROL</span>
+        </div>
+      </div>
+      <div class="header-status">
+        <div class="status-pill" id="status-pill">
+          <span class="status-led" id="status-led"></span>
+          <span id="status-label">CONECTANDO</span>
+        </div>
+        <div class="status-pill ping-pill">
+          <i class="fa-solid fa-wave-square"></i>
+          <span id="ping-label">--</span> ms
+        </div>
+      </div>
+      <button class="header-btn" id="sound-toggle" title="Sonidos">
+        <i class="fa-solid fa-volume-high" id="sound-icon"></i>
+      </button>
+    </header>
+
+    <!-- ===== BODY ===== -->
+    <div class="body">
+      <!-- Sidebar -->
+      <nav class="sidebar" id="sidebar">
+        <button class="sidebar-btn active" data-tab="players"><i class="fa-solid fa-users"></i><span>Jugadores</span><em class="sidebar-count" id="sidebar-players">0</em></button>
+        <button class="sidebar-btn" data-tab="chat"><i class="fa-solid fa-comments"></i><span>Chat</span></button>
+        <button class="sidebar-btn" data-tab="server"><i class="fa-solid fa-server"></i><span>Servidor</span></button>
+        <button class="sidebar-btn" data-tab="world"><i class="fa-solid fa-earth-americas"></i><span>Mundo</span></button>
+        <button class="sidebar-btn" data-tab="dinos"><i class="fa-solid fa-dragon"></i><span>Dinos</span></button>
+        <button class="sidebar-btn" data-tab="items"><i class="fa-solid fa-cube"></i><span>Items</span></button>
+        <button class="sidebar-btn" data-tab="console"><i class="fa-solid fa-terminal"></i><span>Consola</span></button>
+        <div class="sidebar-bottom" style="display:flex; justify-content:space-between; align-items:center; width:100%; padding: 0 10px;">
+          <button class="sidebar-config-btn" id="btn-disconnect" title="Desconectar / Cambiar de Servidor" style="background:none; border:none; color:var(--red); cursor:pointer; font-size:16px; transition:all 0.2s;"><i class="fa-solid fa-power-off"></i></button>
+          <span>POXI RCON v1.1</span>
+        </div>
+      </nav>
+
+      <!-- Content -->
+      <main class="main" id="main-content">
+
+        <!-- ============ TAB: JUGADORES ============ -->
+        <section class="tab active" id="tab-players">
+          <div class="section-head"><h2><i class="fa-solid fa-users"></i> Jugadores Online</h2><button class="icon-btn-sm" id="refresh-players" title="Actualizar"><i class="fa-solid fa-arrows-rotate"></i></button></div>
+          <div class="players-grid" id="players-grid">
+            <div class="empty"><i class="fa-solid fa-satellite-dish"></i><p>Cargando sobrevivientes...</p></div>
+          </div>
+
+          <hr class="sep">
+          <div class="section-head"><h2><i class="fa-solid fa-user-pen"></i> Renombrar Jugador</h2></div>
+          <div class="form-card">
+            <p class="form-desc">Cambia el nombre del personaje de un jugador dentro del juego.</p>
+            <div class="form-row cols-3">
+              <input type="text" id="rename-old" placeholder="Nombre actual del jugador">
+              <input type="text" id="rename-new" placeholder="Nuevo nombre">
+              <button class="btn cyan" onclick="doAction('rename_player', gv('rename-old'), gv('rename-new'))"><i class="fa-solid fa-check"></i> Renombrar</button>
+            </div>
+          </div>
+
+          <div class="section-head" style="margin-top:20px"><h2><i class="fa-solid fa-people-group"></i> Renombrar Tribu</h2></div>
+          <div class="form-card">
+            <p class="form-desc">Cambia el nombre de una tribu existente.</p>
+            <div class="form-row cols-3">
+              <input type="text" id="tribe-old" placeholder="Nombre actual de la tribu">
+              <input type="text" id="tribe-new" placeholder="Nuevo nombre">
+              <button class="btn cyan" onclick="doAction('rename_tribe', gv('tribe-old'), gv('tribe-new'))"><i class="fa-solid fa-check"></i> Renombrar</button>
+            </div>
+          </div>
+
+          <hr class="sep">
+          <div class="section-head"><h2><i class="fa-solid fa-user-shield"></i> Gestión por Steam ID</h2></div>
+          <div class="cards-row">
+            <div class="form-card">
+              <h4><i class="fa-solid fa-ban c-cyan"></i> Desbanear</h4>
+              <div class="form-row"><input type="text" id="unban-id" placeholder="Steam ID"><button class="btn cyan-o" onclick="doAction('unban', gv('unban-id'))"><i class="fa-solid fa-check"></i></button></div>
+            </div>
+            <div class="form-card">
+              <h4><i class="fa-solid fa-user-plus c-cyan"></i> Whitelist +</h4>
+              <div class="form-row"><input type="text" id="wl-add" placeholder="Steam ID"><button class="btn cyan-o" onclick="doAction('whitelist_add', gv('wl-add'))"><i class="fa-solid fa-plus"></i></button></div>
+            </div>
+            <div class="form-card">
+              <h4><i class="fa-solid fa-user-minus c-red"></i> Whitelist −</h4>
+              <div class="form-row"><input type="text" id="wl-rm" placeholder="Steam ID"><button class="btn red-o" onclick="doAction('whitelist_remove', gv('wl-rm'))"><i class="fa-solid fa-minus"></i></button></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ TAB: CHAT ============ -->
+        <section class="tab" id="tab-chat">
+          <div class="section-head"><h2><i class="fa-solid fa-comments"></i> Mensajería del Servidor</h2></div>
+
+          <div class="form-card highlight-card">
+            <h4><i class="fa-solid fa-bullhorn c-yellow"></i> Broadcast (Pantalla Completa)</h4>
+            <p class="form-desc">Muestra un mensaje a pantalla completa a TODOS los jugadores conectados.</p>
+            <div class="form-row"><input type="text" id="broadcast-msg" placeholder="Escribe tu anuncio..."><button class="btn cyan" onclick="doAction('broadcast', gv('broadcast-msg'))"><i class="fa-solid fa-paper-plane"></i> Enviar</button></div>
+          </div>
+
+          <div class="form-card">
+            <h4><i class="fa-solid fa-message c-cyan"></i> Chat Global del Servidor</h4>
+            <p class="form-desc">Envía un mensaje al chat del juego como [SERVER].</p>
+            <div class="form-row"><input type="text" id="chat-msg" placeholder="Tu mensaje en el chat..."><button class="btn cyan" onclick="doAction('serverchat', gv('chat-msg'))"><i class="fa-solid fa-paper-plane"></i> Enviar</button></div>
+          </div>
+
+          <div class="form-card">
+            <h4><i class="fa-solid fa-envelope c-purple"></i> Mensaje Privado a Jugador</h4>
+            <p class="form-desc">Envía un mensaje privado a un jugador específico.</p>
+            <div class="form-row cols-3">
+              <div class="player-select-wrap"><select class="player-select" id="pm-player-sel"><option value="">-- Seleccionar jugador --</option></select><input type="text" id="pm-player-manual" placeholder="o escribe nombre..."></div>
+              <input type="text" id="pm-msg" placeholder="Tu mensaje privado...">
+              <button class="btn cyan" onclick="doAction('serverchat_player', getPlayerOrManual('pm-player-sel','pm-player-manual'), gv('pm-msg'))"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+          </div>
+
+          <div class="cards-row">
+            <div class="form-card">
+              <h4><i class="fa-solid fa-newspaper c-cyan"></i> Cambiar MOTD</h4>
+              <p class="form-desc">Mensaje del Día que ven al unirse.</p>
+              <div class="form-row"><input type="text" id="motd-msg" placeholder="Nuevo MOTD..."><button class="btn cyan-o" onclick="doAction('setmotd', gv('motd-msg'))"><i class="fa-solid fa-check"></i></button></div>
+            </div>
+            <div class="form-card">
+              <h4><i class="fa-solid fa-eye c-cyan"></i> Ver MOTD Actual</h4>
+              <p class="form-desc">Consulta el mensaje actual.</p>
+              <button class="btn cyan-o full" onclick="doAction('showmotd')"><i class="fa-solid fa-eye"></i> Ver MOTD</button>
+            </div>
+          </div>
+
+          <hr class="sep">
+          <div class="section-head"><h2><i class="fa-solid fa-clock-rotate-left"></i> Chat Reciente</h2><button class="icon-btn-sm" id="refresh-chat" title="Refrescar"><i class="fa-solid fa-arrows-rotate"></i></button></div>
+          <div class="chat-box" id="chat-box"><p class="muted">Pulsa refrescar para ver los últimos mensajes del chat.</p></div>
+        </section>
+
+        <!-- ============ TAB: SERVIDOR ============ -->
+        <section class="tab" id="tab-server">
+          <div class="section-head"><h2><i class="fa-solid fa-server"></i> Control del Servidor</h2></div>
+
+          <div class="action-row">
+            <div class="action-icon-wrap green"><i class="fa-solid fa-floppy-disk"></i></div>
+            <div class="action-body">
+              <h4>Guardar Mundo</h4>
+              <p>Fuerza un guardado manual inmediato del mapa.</p>
+            </div>
+            <button class="btn green" onclick="doAction('save')"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+          </div>
+
+          <div class="action-row">
+            <div class="action-icon-wrap cyan"><i class="fa-solid fa-floppy-disk"></i></div>
+            <div class="action-body">
+              <h4>Guardar + Broadcast</h4>
+              <p>Guarda el mundo y envía un aviso a todos los jugadores.</p>
+            </div>
+            <div class="form-row compact"><input type="text" id="save-broadcast-msg" placeholder="Mensaje (opcional)" value="⚠️ Guardando mundo..."><button class="btn cyan" onclick="doAction('save_broadcast', gv('save-broadcast-msg'))"><i class="fa-solid fa-floppy-disk"></i> Guardar + Aviso</button></div>
+          </div>
+
+          <div class="action-row danger-row">
+            <div class="action-icon-wrap red"><i class="fa-solid fa-power-off"></i></div>
+            <div class="action-body">
+              <h4>Apagar Servidor (DoExit)</h4>
+              <p>⚠️ Cierra completamente el proceso del servidor. Guarda antes.</p>
+            </div>
+            <button class="btn red" onclick="confirmAction('¿SEGURO que quieres APAGAR el servidor? Todos los jugadores serán desconectados.', 'doexit')"><i class="fa-solid fa-power-off"></i> Apagar</button>
+          </div>
+
+          <div class="action-row">
+            <div class="action-icon-wrap purple"><i class="fa-solid fa-gauge-high"></i></div>
+            <div class="action-body">
+              <h4>Velocidad del Juego (Slomo)</h4>
+              <p>1 = normal, 2 = doble velocidad, 0.5 = cámara lenta.</p>
+            </div>
+            <div class="form-row compact"><input type="number" id="slomo-v" value="1" step="0.1" min="0.1" max="10"><button class="btn cyan-o" onclick="doAction('slomo', gv('slomo-v'))"><i class="fa-solid fa-check"></i></button></div>
+          </div>
+
+          <hr class="sep">
+          <div class="section-head"><h2><i class="fa-solid fa-circle-info"></i> Información</h2></div>
+          <div class="info-cards">
+            <div class="info-card"><span class="info-lbl">IP</span><span class="info-val" id="info-ip">167.17.71.121</span></div>
+            <div class="info-card"><span class="info-lbl">RCON</span><span class="info-val" id="info-port">25205</span></div>
+            <div class="info-card"><span class="info-lbl">PING</span><span class="info-val" id="info-ping">-- ms</span></div>
+            <div class="info-card"><span class="info-lbl">ESTADO</span><span class="info-val" id="info-state">Conectando...</span></div>
+          </div>
+        </section>
+
+        <!-- ============ TAB: MUNDO ============ -->
+        <section class="tab" id="tab-world">
+          <div class="section-head"><h2><i class="fa-solid fa-sun"></i> Hora del Día</h2></div>
+          <div class="time-buttons">
+            <button class="time-card" onclick="doAction('time','05:00')"><i class="fa-solid fa-cloud-sun"></i><strong>Amanecer</strong><small>05:00</small></button>
+            <button class="time-card" onclick="doAction('time','08:00')"><i class="fa-solid fa-sun"></i><strong>Mañana</strong><small>08:00</small></button>
+            <button class="time-card" onclick="doAction('time','12:00')"><i class="fa-solid fa-sun"></i><strong>Mediodía</strong><small>12:00</small></button>
+            <button class="time-card" onclick="doAction('time','15:00')"><i class="fa-solid fa-cloud-sun"></i><strong>Tarde</strong><small>15:00</small></button>
+            <button class="time-card" onclick="doAction('time','18:00')"><i class="fa-solid fa-cloud-moon"></i><strong>Atardecer</strong><small>18:00</small></button>
+            <button class="time-card" onclick="doAction('time','21:00')"><i class="fa-solid fa-moon"></i><strong>Noche</strong><small>21:00</small></button>
+            <button class="time-card" onclick="doAction('time','00:00')"><i class="fa-solid fa-moon"></i><strong>Medianoche</strong><small>00:00</small></button>
+            <button class="time-card" onclick="doAction('time','03:00')"><i class="fa-solid fa-star"></i><strong>Madrugada</strong><small>03:00</small></button>
+          </div>
+
+          <div class="form-card" style="margin-top:16px">
+            <h4><i class="fa-solid fa-clock c-cyan"></i> Hora Personalizada</h4>
+            <div class="form-row"><input type="text" id="custom-time" placeholder="HH:MM (ej: 14:30)"><button class="btn cyan" onclick="doAction('time', gv('custom-time'))"><i class="fa-solid fa-check"></i> Aplicar</button></div>
+          </div>
+
+          <hr class="sep">
+          <div class="section-head"><h2><i class="fa-solid fa-cloud-rain"></i> Clima</h2></div>
+          <div class="weather-buttons">
+            <button class="weather-chip" onclick="doAction('weather','makeitrain')"><i class="fa-solid fa-cloud-showers-heavy"></i> Lluvia</button>
+            <button class="weather-chip" onclick="doAction('weather','stoprain')"><i class="fa-solid fa-cloud-sun"></i> Parar Lluvia</button>
+            <button class="weather-chip" onclick="doAction('weather','fogitup')"><i class="fa-solid fa-smog"></i> Niebla</button>
+            <button class="weather-chip" onclick="doAction('weather','stopfog')"><i class="fa-solid fa-sun"></i> Parar Niebla</button>
+            <button class="weather-chip" onclick="doAction('weather','heatwave')"><i class="fa-solid fa-temperature-arrow-up"></i> Ola Calor</button>
+            <button class="weather-chip" onclick="doAction('weather','coldfront')"><i class="fa-solid fa-snowflake"></i> Frente Frío</button>
+            <button class="weather-chip" onclick="doAction('weather','start_superheat')"><i class="fa-solid fa-fire"></i> Super Calor</button>
+            <button class="weather-chip" onclick="doAction('weather','stop_superheat')"><i class="fa-solid fa-ban"></i> Stop Calor</button>
+            <button class="weather-chip" onclick="doAction('weather','start_electricalstorm')"><i class="fa-solid fa-bolt"></i> Tormenta</button>
+            <button class="weather-chip" onclick="doAction('weather','stop_electricalstorm')"><i class="fa-solid fa-circle-xmark"></i> Stop Tormenta</button>
+            <button class="weather-chip" onclick="doAction('weather','start_sandstorm')"><i class="fa-solid fa-wind"></i> Arena</button>
+            <button class="weather-chip" onclick="doAction('weather','stop_sandstorm')"><i class="fa-solid fa-circle-xmark"></i> Stop Arena</button>
+          </div>
+        </section>
+
+        <!-- ============ TAB: DINOS ============ -->
+        <section class="tab" id="tab-dinos">
+          <div class="section-head"><h2><i class="fa-solid fa-dragon"></i> Dinosaurios</h2></div>
+
+          <div class="action-row danger-row">
+            <div class="action-icon-wrap red"><i class="fa-solid fa-skull-crossbones"></i></div>
+            <div class="action-body"><h4>Eliminar Dinos Salvajes</h4><p>Mata todos los dinos salvajes y regenera spawns.</p></div>
+            <button class="btn red" onclick="confirmAction('¿Eliminar TODOS los dinos salvajes?', 'wilddinos')"><i class="fa-solid fa-skull"></i> Eliminar</button>
+          </div>
+
+          <div class="form-card highlight-card" style="margin-top:16px">
+            <h4><i class="fa-solid fa-egg c-green"></i> Spawnear Dino Domado (GMSummon)</h4>
+            <p class="form-desc">Invoca un dinosaurio ya domado. Selecciona uno de la lista o escribe el nombre interno.</p>
+            <div class="form-row cols-3">
+              <input type="text" id="dino-name" placeholder="Nombre interno (ej: Rex_Character_BP_C)" list="dino-datalist">
+              <input type="number" id="dino-level" placeholder="Nivel" min="1" max="1000" value="150">
+              <button class="btn green" onclick="doAction('gmsummon', gv('dino-name'), gv('dino-level'))"><i class="fa-solid fa-plus"></i> Spawnear</button>
+            </div>
+            <datalist id="dino-datalist"></datalist>
+          </div>
+
+          <div class="form-card" style="margin-top:12px">
+            <h4><i class="fa-solid fa-paw c-cyan"></i> Densidad de Dinos</h4>
+            <div class="form-row"><input type="number" id="dinocount" value="1000" min="0"><button class="btn cyan-o" onclick="doAction('settargetdinocount', gv('dinocount'))"><i class="fa-solid fa-check"></i></button></div>
+          </div>
+
+          <hr class="sep">
+          <div class="section-head"><h2><i class="fa-solid fa-book-open"></i> Referencia Rápida de Dinos</h2></div>
+          <div class="chip-grid" id="dino-chips"></div>
+        </section>
+
+        <!-- ============ TAB: ITEMS ============ -->
+        <section class="tab" id="tab-items">
+          <div class="section-head"><h2><i class="fa-solid fa-cube"></i> Dar Items Inteligente</h2></div>
+
+          <div class="form-card highlight-card">
+            <h4><i class="fa-solid fa-gift c-green"></i> Buscar y Dar Item</h4>
+            <p class="form-desc">Escribe el nombre en español o inglés. El sistema encontrará automáticamente el código GFI correcto.</p>
+            <div class="player-select-row" style="margin-bottom: 12px; display: flex; gap: 10px;">
+              <div class="player-select-wrap" style="flex: 1;"><select class="player-select" id="item-player-sel"><option value="">-- Dar a: Sí mismo (Admin) --</option></select><input type="text" id="item-player-manual" placeholder="o Steam ID / Player ID..."></div>
+            </div>
+            <div class="form-row cols-4">
+              <div class="search-input-wrap">
+                <input type="text" id="item-search" placeholder="Buscar: metal, madera, piedra, pólvora..." autocomplete="off">
+                <div class="search-results" id="item-results"></div>
+              </div>
+              <input type="number" id="item-qty" placeholder="Cantidad" min="1" value="100">
+              <input type="number" id="item-quality" placeholder="Calidad" min="0" value="0">
+              <button class="btn green" onclick="giveSelectedItem()"><i class="fa-solid fa-gift"></i> Dar</button>
+            </div>
+            <div class="selected-item" id="selected-item" style="display:none">
+              <span>Seleccionado:</span> <strong id="selected-item-name"></strong> <code id="selected-item-gfi"></code>
+            </div>
+          </div>
+
+          <hr class="sep">
+          <div class="section-head"><h2><i class="fa-solid fa-star"></i> Dar Experiencia a Jugador</h2></div>
+          <div class="form-card">
+            <p class="form-desc">Selecciona un jugador conectado (o escribe su Steam ID) y la cantidad de XP.</p>
+            <div class="form-row cols-3">
+              <div class="player-select-wrap"><select class="player-select" id="xp-player-sel"><option value="">-- Jugador --</option></select><input type="text" id="xp-player-manual" placeholder="o Steam ID..."></div>
+              <input type="number" id="xp-amount" placeholder="Cantidad XP" min="1" value="1000">
+              <button class="btn cyan" onclick="doAction('giveexp_player', getPlayerOrManual('xp-player-sel','xp-player-manual'), gv('xp-amount'))"><i class="fa-solid fa-star"></i> Dar XP</button>
+            </div>
+          </div>
+
+          <hr class="sep">
+          <div class="section-head"><h2><i class="fa-solid fa-bookmark"></i> Categorías Rápidas</h2></div>
+          <div class="item-categories" id="item-categories"></div>
+        </section>
+
+        <!-- ============ TAB: CONSOLA ============ -->
+        <section class="tab" id="tab-console">
+          <div class="section-head"><h2><i class="fa-solid fa-terminal"></i> Consola RCON</h2><button class="icon-btn-sm" id="clear-console"><i class="fa-solid fa-trash-can"></i></button></div>
+          <div class="term-body" id="term-body">
+            <div class="term-line sys"><span class="t-time">[SYS]</span><span>Consola RCON lista. Escribe cualquier comando de ARK.</span></div>
+          </div>
+          <div class="term-input">
+            <span class="term-prompt">$</span>
+            <input type="text" id="cmd-input" placeholder="Comando RCON..." autocomplete="off">
+            <button class="btn cyan" id="cmd-send"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-bg" id="modal">
+      <div class="modal-box">
+        <div class="modal-glow-bg"></div>
+        <span class="modal-emoji">⚠️</span>
+        <h3>CONFIRMACIÓN</h3>
+        <p id="modal-text">¿Estás seguro?</p>
+        <div class="modal-btns">
+          <button class="btn outline" id="modal-cancel">CANCELAR</button>
+          <button class="btn red" id="modal-ok">EJECUTAR</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toasts -->
+    <div class="toasts" id="toasts"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
