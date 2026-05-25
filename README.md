@@ -47,15 +47,15 @@ Si deseas correrlo localmente o hostearlo en un servidor para acceder desde tu m
    ```bash
    npm install
    ```
-3. Ejecuta el servidor en modo desarrollo u producción:
+3. Ejecuta el servidor en tu PC. Si quieres modificar el código y ver los cambios en tiempo real en el navegador (modo desarrollo con autorecarga activa en localhost):
    ```bash
-   # Modo desarrollo (autorecarga activa)
    npm run dev
-
-   # Modo normal
+   ```
+   Si solo quieres iniciar el servidor de forma normal:
+   ```bash
    npm start
    ```
-4. Abre **`http://localhost:3000`** en tu navegador. ¡Disfruta!
+4. Abre **`http://localhost:3000`** en tu navegador y ¡a disfrutar en tiempo real! ⚡
 
 ## ⚙️ Configuración y Multi-Servidor (v1.1) 🛠️
 
