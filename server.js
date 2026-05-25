@@ -409,6 +409,22 @@ app.post('/api/action', async (req, res) => {
       if (!payload || !payload2) return res.status(400).json({ error: 'Nombre actual y nuevo requeridos.' });
       cmd = `RenameTribe "${payload}" "${payload2}"`;
       break;
+    case 'kill_player':
+      if (!payload) return res.status(400).json({ error: 'Player ID requerido.' });
+      cmd = `KillPlayer ${payload}`;
+      break;
+    case 'clear_inventory':
+      if (!payload) return res.status(400).json({ error: 'Player ID requerido.' });
+      cmd = `ClearPlayerInventory ${payload} 1 1 1`;
+      break;
+    case 'defeat_boss':
+      if (!payload || !payload2 || !payload3) return res.status(400).json({ error: 'Jugador, Jefe y Dificultad requeridos.' });
+      cmd = `DefeatBoss ${payload} "${payload2}" ${payload3}`;
+      break;
+    case 'force_join_tribe':
+      if (!payload || !payload2) return res.status(400).json({ error: 'Jugador y Nombre de Tribu requeridos.' });
+      cmd = `ForcePlayerToJoinTribe ${payload} "${payload2}"`;
+      break;
 
     // Mensajería
     case 'broadcast':
@@ -469,9 +485,9 @@ app.post('/api/action', async (req, res) => {
     case 'wilddinos':
       cmd = 'DestroyWildDinos';
       break;
-    case 'gmsummon':
-      if (!payload || !payload2) return res.status(400).json({ error: 'Criatura y nivel requeridos.' });
-      cmd = `GMSummon "${payload}" ${payload2}`;
+    case 'destroyall_class':
+      if (!payload) return res.status(400).json({ error: 'Nombre de clase de criatura requerido.' });
+      cmd = `DestroyAll ${payload}`;
       break;
     case 'settargetdinocount':
       if (!payload) return res.status(400).json({ error: 'Cantidad requerida.' });
@@ -505,10 +521,21 @@ app.post('/api/action', async (req, res) => {
       cmd = `GiveExpToPlayer ${payload} ${payload2} 0 1`;
       break;
 
-    // Teleport
-    case 'teleport_to_me':
-      if (!payload) return res.status(400).json({ error: 'Nombre de jugador requerido.' });
-      cmd = `TeleportPlayerNameToMe "${payload}"`;
+    // Wipes de Tribus y Globales
+    case 'destroytribe_dinos':
+      if (!payload) return res.status(400).json({ error: 'ID de Tribu requerido.' });
+      cmd = `DestroyTribeIdDinos ${payload}`;
+      break;
+    case 'destroytribe_structures':
+      if (!payload) return res.status(400).json({ error: 'ID de Tribu requerido.' });
+      cmd = `DestroyTribeIdStructures ${payload}`;
+      break;
+    case 'destroytribe_players':
+      if (!payload) return res.status(400).json({ error: 'ID de Tribu requerido.' });
+      cmd = `DestroyTribeIdPlayers ${payload}`;
+      break;
+    case 'destroy_all_structures':
+      cmd = `DestroyStructures`;
       break;
 
     default:

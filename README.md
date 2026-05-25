@@ -16,13 +16,21 @@
     *   Filtro y selección instantánea por **Categorías Rápidas** con más de 140 ítems mapeados (Armas, Recursos, Estructuras, Comida, Kibbles, Monturas y más).
 *   👥 **Control Total de Sobrevivientes:**
     *   Visualiza en tiempo real los jugadores conectados.
-    *   Acciones directas a un solo click: **Teleportar a ti**, **Kick (Expulsar)**, o **Ban (Banear permanentemente)** con confirmaciones de seguridad animadas.
+    *   Acciones directas a un solo click: **Limpiar Inventario**, **Matar Jugador**, **Kick (Expulsar)**, o **Ban (Banear permanentemente)** con confirmaciones animadas.
     *   Envía mensajes privados en tiempo real a jugadores específicos.
-    *   Entrega experiencia (XP) a un jugador específico desde un cómodo desplegable.
+    *   Entrega experiencia (XP) a un jugador específico.
+    *   **Ascensiones Remotas:** Desbloquea engramas Tek y niveles extra obligando a un jugador a "Derrotar a un Jefe" (Overseer, Dragón, etc.) desde tu panel.
+*   👑 **Gestión Extrema de Tribus:**
+    *   **Forzar Unión:** Mueve a un jugador a una tribu sin invitaciones dentro del juego.
+    *   Renombra tribus y jugadores libremente.
+*   💀 **Wipes y Castigos (NUEVO v1.2):**
+    *   **Extinción de Especie:** Borra a TODOS los dinosaurios de una misma clase del mapa con un click (DestroyAll).
+    *   **Wipe por Tribu:** Aniquila al instante a todos los jugadores, dinos o estructuras de una tribu específica introduciendo su ID.
+    *   **Wipe Global:** Botón de emergencia para destruir todas las estructuras del servidor.
 *   🎮 **Gestión del Servidor y Entorno:**
+    *   **Pausa del Servidor:** Congela el avance del tiempo e IA (`Slomo 0`) para eventos o solución de bugs.
     *   **Control del clima:** Lluvia, Niebla, Ola de calor, Tormenta eléctrica, Arena, etc.
     *   **Control del tiempo:** Amanecer, Mediodía, Atardecer, Medianoche con un click o introduce tu hora exacta.
-    *   **Spawneo de Dinos Domados:** Selecciona de una base de datos con los 30 dinosaurios más populares a cualquier nivel o introduce su ID interna.
     *   **Acciones de Servidor:** Guardado rápido (`SaveWorld`), Guardar con mensaje Broadcast previo de aviso en pantalla para los jugadores, apagar servidor de forma segura (`DoExit`), y ajustar la velocidad del juego (`Slomo`).
 *   📟 **Consola RCON Interactiva:**
     *   Una consola estilo terminal de comandos hacker donde puedes ejecutar cualquier comando manual que desees, con respuesta instantánea del servidor y log en tiempo real.

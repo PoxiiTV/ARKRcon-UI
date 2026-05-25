@@ -1,6 +1,6 @@
 {
   "name": "ark-rcon-web",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Cliente RCON web premium para ARK Survival Evolved con interfaz Sci-Fi y sonidos",
   "main": "main.js",
   "scripts": {

@@ -80,6 +80,7 @@
         <button class="sidebar-btn" data-tab="world"><i class="fa-solid fa-earth-americas"></i><span>Mundo</span></button>
         <button class="sidebar-btn" data-tab="dinos"><i class="fa-solid fa-dragon"></i><span>Dinos</span></button>
         <button class="sidebar-btn" data-tab="items"><i class="fa-solid fa-cube"></i><span>Items</span></button>
+        <button class="sidebar-btn" data-tab="wipes"><i class="fa-solid fa-burst"></i><span style="color:var(--red);">Wipes</span></button>
         <button class="sidebar-btn" data-tab="console"><i class="fa-solid fa-terminal"></i><span>Consola</span></button>
         <div class="sidebar-bottom" style="display:flex; justify-content:space-between; align-items:center; width:100%; padding: 0 10px;">
           <button class="sidebar-config-btn" id="btn-disconnect" title="Desconectar / Cambiar de Servidor" style="background:none; border:none; color:var(--red); cursor:pointer; font-size:16px; transition:all 0.2s;"><i class="fa-solid fa-power-off"></i></button>
@@ -115,6 +116,38 @@
               <input type="text" id="tribe-old" placeholder="Nombre actual de la tribu">
               <input type="text" id="tribe-new" placeholder="Nuevo nombre">
               <button class="btn cyan" onclick="doAction('rename_tribe', gv('tribe-old'), gv('tribe-new'))"><i class="fa-solid fa-check"></i> Renombrar</button>
+            </div>
+          </div>
+
+          <div class="section-head" style="margin-top:20px"><h2><i class="fa-solid fa-trophy"></i> Desbloqueo de Jefes (Ascensión)</h2></div>
+          <div class="form-card highlight-card">
+            <p class="form-desc">Fuerza la victoria contra un Jefe para un jugador específico. Desbloquea niveles máximos y engramas Tek remotamente.</p>
+            <div class="form-row cols-4">
+              <div class="player-select-wrap"><select class="player-select" id="boss-player-sel"><option value="">-- Jugador --</option></select><input type="text" id="boss-player-manual" placeholder="o Steam ID..."></div>
+              <select id="boss-name" style="background:var(--bg-dark); color:var(--text-main); border:1px solid var(--border-color); padding:8px; border-radius:4px;">
+                <option value="Guardian">Overseer (Isla)</option>
+                <option value="Uberspider">Broodmother</option>
+                <option value="Megapithecus">Megapithecus</option>
+                <option value="Dragon">Dragón</option>
+                <option value="Manticore">Manticore</option>
+                <option value="Rockwell">Rockwell</option>
+              </select>
+              <select id="boss-diff" style="background:var(--bg-dark); color:var(--text-main); border:1px solid var(--border-color); padding:8px; border-radius:4px;">
+                <option value="0">Gamma (Fácil)</option>
+                <option value="1">Beta (Medio)</option>
+                <option value="2">Alpha (Difícil)</option>
+              </select>
+              <button class="btn green" onclick="doAction('defeat_boss', getPlayerOrManual('boss-player-sel','boss-player-manual'), gv('boss-name'), gv('boss-diff'))"><i class="fa-solid fa-crown"></i> Derrotar Jefe</button>
+            </div>
+          </div>
+
+          <div class="section-head" style="margin-top:20px"><h2><i class="fa-solid fa-handshake-angle"></i> Forzar Unión a Tribu</h2></div>
+          <div class="form-card">
+            <p class="form-desc">Mueve a un jugador a una tribu específica sin necesidad de invitación en el juego.</p>
+            <div class="form-row cols-3">
+              <div class="player-select-wrap"><select class="player-select" id="tribe-player-sel"><option value="">-- Jugador --</option></select><input type="text" id="tribe-player-manual" placeholder="o Steam ID..."></div>
+              <input type="text" id="join-tribe-name" placeholder="Nombre exacto de la Tribu destino">
+              <button class="btn cyan" onclick="doAction('force_join_tribe', getPlayerOrManual('tribe-player-sel','tribe-player-manual'), gv('join-tribe-name'))"><i class="fa-solid fa-link"></i> Forzar Unión</button>
             </div>
           </div>
 
@@ -220,6 +253,18 @@
             <div class="form-row compact"><input type="number" id="slomo-v" value="1" step="0.1" min="0.1" max="10"><button class="btn cyan-o" onclick="doAction('slomo', gv('slomo-v'))"><i class="fa-solid fa-check"></i></button></div>
           </div>
 
+          <div class="action-row">
+            <div class="action-icon-wrap yellow"><i class="fa-solid fa-pause"></i></div>
+            <div class="action-body">
+              <h4>Pausa Temporal del Servidor</h4>
+              <p>Congela el tiempo y la IA del servidor (equivale a Slomo 0).</p>
+            </div>
+            <div class="form-row compact" style="width: 200px;">
+              <button class="btn yellow" onclick="doAction('slomo', '0')"><i class="fa-solid fa-pause"></i> Pausar</button>
+              <button class="btn cyan" onclick="doAction('slomo', '1')"><i class="fa-solid fa-play"></i> Reanudar</button>
+            </div>
+          </div>
+
           <hr class="sep">
           <div class="section-head"><h2><i class="fa-solid fa-circle-info"></i> Información</h2></div>
           <div class="info-cards">
@@ -277,13 +322,12 @@
             <button class="btn red" onclick="confirmAction('¿Eliminar TODOS los dinos salvajes?', 'wilddinos')"><i class="fa-solid fa-skull"></i> Eliminar</button>
           </div>
 
-          <div class="form-card highlight-card" style="margin-top:16px">
-            <h4><i class="fa-solid fa-egg c-green"></i> Spawnear Dino Domado (GMSummon)</h4>
-            <p class="form-desc">Invoca un dinosaurio ya domado. Selecciona uno de la lista o escribe el nombre interno.</p>
+          <div class="form-card highlight-card" style="margin-top:16px; border: 1px solid rgba(255, 60, 60, 0.3);">
+            <h4><i class="fa-solid fa-meteor c-red"></i> Extinción de Especie (DestroyAll)</h4>
+            <p class="form-desc">Elimina de forma absoluta a todos los dinosaurios salvajes o domados de una especie en todo el mapa.</p>
             <div class="form-row cols-3">
-              <input type="text" id="dino-name" placeholder="Nombre interno (ej: Rex_Character_BP_C)" list="dino-datalist">
-              <input type="number" id="dino-level" placeholder="Nivel" min="1" max="1000" value="150">
-              <button class="btn green" onclick="doAction('gmsummon', gv('dino-name'), gv('dino-level'))"><i class="fa-solid fa-plus"></i> Spawnear</button>
+              <input type="text" id="dino-extinct-name" placeholder="Nombre de clase (ej: Rex_Character_BP_C)" list="dino-datalist">
+              <button class="btn red" onclick="confirmAction('¿EXTINGUIR todas las entidades de esta clase?', 'destroyall_class', gv('dino-extinct-name'))"><i class="fa-solid fa-skull"></i> Extinguir</button>
             </div>
             <datalist id="dino-datalist"></datalist>
           </div>
@@ -348,6 +392,41 @@
             <span class="term-prompt">$</span>
             <input type="text" id="cmd-input" placeholder="Comando RCON..." autocomplete="off">
             <button class="btn cyan" id="cmd-send"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+        </section>
+
+        <!-- ============ TAB: WIPES (NUEVO) ============ -->
+        <section class="tab" id="tab-wipes">
+          <div class="section-head"><h2><i class="fa-solid fa-burst" style="color:var(--red);"></i> Wipes y Castigos Extremos</h2></div>
+
+          <div class="form-card" style="border-left: 4px solid var(--red);">
+            <h4><i class="fa-solid fa-dragon c-red"></i> Wipe de Dinos por Tribu</h4>
+            <p class="form-desc">Elimina de forma permanente TODOS los dinosaurios de una tribu específica. Necesitas el ID de la tribu.</p>
+            <div class="form-row"><input type="number" id="wipe-tribe-dinos" placeholder="ID de la tribu..."><button class="btn red" onclick="confirmAction('¿SEGURO? Se borrarán todos los dinos de la tribu.', 'destroytribe_dinos', gv('wipe-tribe-dinos'))"><i class="fa-solid fa-skull"></i> Wipe Dinos</button></div>
+          </div>
+
+          <div class="form-card" style="border-left: 4px solid var(--red); margin-top: 15px;">
+            <h4><i class="fa-solid fa-house-chimney-crack c-red"></i> Wipe de Estructuras por Tribu</h4>
+            <p class="form-desc">Destruye TODAS las estructuras y construcciones de una tribu en el mapa.</p>
+            <div class="form-row"><input type="number" id="wipe-tribe-structs" placeholder="ID de la tribu..."><button class="btn red" onclick="confirmAction('¿SEGURO? Se destruirán todas las estructuras de la tribu.', 'destroytribe_structures', gv('wipe-tribe-structs'))"><i class="fa-solid fa-bomb"></i> Wipe Estructuras</button></div>
+          </div>
+          
+          <div class="form-card" style="border-left: 4px solid var(--red); margin-top: 15px;">
+            <h4><i class="fa-solid fa-user-xmark c-red"></i> Matar Jugadores por Tribu</h4>
+            <p class="form-desc">Asesina instantáneamente a todos los personajes que pertenezcan a la tribu especificada.</p>
+            <div class="form-row"><input type="number" id="wipe-tribe-players" placeholder="ID de la tribu..."><button class="btn red" onclick="confirmAction('¿SEGURO? Todos los miembros de esta tribu morirán instantáneamente.', 'destroytribe_players', gv('wipe-tribe-players'))"><i class="fa-solid fa-skull-crossbones"></i> Wipe Jugadores</button></div>
+          </div>
+
+          <hr class="sep">
+          <div class="section-head"><h2><i class="fa-solid fa-radiation"></i> Wipes Globales</h2></div>
+
+          <div class="action-row danger-row">
+            <div class="action-icon-wrap red"><i class="fa-solid fa-radiation"></i></div>
+            <div class="action-body">
+              <h4>Destrucción Total (DestroyStructures)</h4>
+              <p>⚠️ ADVERTENCIA: Este comando destruirá TODAS las estructuras de TODOS los jugadores en todo el servidor.</p>
+            </div>
+            <button class="btn red" onclick="confirmAction('¡PELIGRO EXTREMO! ¿Borrar TODAS LAS ESTRUCTURAS del servidor entero?', 'destroy_all_structures')"><i class="fa-solid fa-radiation"></i> WIPE GLOBAL</button>
           </div>
         </section>
 

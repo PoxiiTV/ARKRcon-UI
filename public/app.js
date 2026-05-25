@@ -389,7 +389,8 @@ function renderPlayers(players) {
         <div><div class="player-name">${esc(p.name)}</div><div class="player-id">${p.id}</div></div>
       </div>
       <div class="player-actions">
-        <button class="p-btn tp" title="Teleportar a ti" onclick="doAction('teleport_to_me','${ea(p.name)}')"><i class="fa-solid fa-location-arrow"></i></button>
+        <button class="p-btn tp" style="background:var(--yellow);color:#000" title="Limpiar Inventario" onclick="confirmAction('¿Vaciar TODO el inventario de ${ea(p.name)}?','clear_inventory','${ea(p.id)}')"><i class="fa-solid fa-box-open"></i></button>
+        <button class="p-btn red" style="background:var(--red);color:#fff" title="Matar Jugador" onclick="confirmAction('¿Asesinar instantáneamente a ${ea(p.name)}?','kill_player','${ea(p.id)}')"><i class="fa-solid fa-skull"></i></button>
         <button class="p-btn kick" title="Expulsar" onclick="confirmAction('¿Expulsar a ${ea(p.name)}?','kick','${ea(p.id)}')"><i class="fa-solid fa-right-from-bracket"></i></button>
         <button class="p-btn ban" title="Banear" onclick="confirmAction('¿BANEAR a ${ea(p.name)}?','ban','${ea(p.id)}')"><i class="fa-solid fa-gavel"></i></button>
       </div>
@@ -462,7 +463,7 @@ window.giveSelectedItem = function() {
 
 // ===== BUILD UI =====
 function buildDinoChips() {
-  $('dino-chips').innerHTML = DINOS_DB.map(d => `<button class="chip" onclick="document.getElementById('dino-name').value='${d.id}'; sfx.play('click');">${d.name}</button>`).join('');
+  $('dino-chips').innerHTML = DINOS_DB.map(d => `<button class="chip" onclick="document.getElementById('dino-extinct-name').value='${d.id}'; sfx.play('click');">${d.name}</button>`).join('');
 }
 
 function buildDinoDatalist() {
