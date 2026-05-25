@@ -124,7 +124,7 @@ body{background:var(--bg);color:var(--text);height:100vh;overflow:hidden}
 .player-select:focus{outline:none;border-color:rgba(0,243,255,.4)}
 
 /* Inputs */
-input[type="text"],input[type="number"]{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;color:#fff;padding:11px 15px;font-family:'Outfit',sans-serif;font-size:14px;transition:var(--fast)}
+input[type="text"],input[type="number"],input[type="password"]{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;color:#fff;padding:11px 15px;font-family:'Outfit',sans-serif;font-size:14px;transition:var(--fast)}
 input:focus{outline:none;border-color:rgba(0,243,255,.4);box-shadow:0 0 10px rgba(0,243,255,.08);background:rgba(0,0,0,.45)}
 input::placeholder{color:rgba(255,255,255,.18)}
 
