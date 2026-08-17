@@ -91,4 +91,8 @@ En la versión **v1.1**, ¡ya no necesitas editar ningún archivo de código!
 
 ## 🛡️ Licencia
 
-Distribuido bajo la licencia MIT. Diseñado con ❤️ por **PoxiiTV & Antigravity**.
+Distribuido bajo la **PolyForm Noncommercial License 1.0.0** 🔒. Diseñado con ❤️ por **PoxiiTV & Antigravity**.
+
+Libre para **uso personal**: conectar tu servidor, aprender y experimentar. Prohibido el **uso comercial** — no se puede vender ni sacar beneficio económico con este proyecto.
+
+📄 Texto completo en [`LICENSE`](LICENSE).
